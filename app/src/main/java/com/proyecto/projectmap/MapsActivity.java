@@ -2,6 +2,7 @@ package com.proyecto.projectmap;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -10,6 +11,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private View fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +21,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Aquí abrira la activity para hacer foto o video.
+            }
+        });
     }
 
     /**
@@ -31,10 +40,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap){
+
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setMyLocationEnabled(true);
+        mMap.setPadding(0, 155, 0, 0);
+
+        //Le decimos a Firebase que este sera el contexto
+        Firebase.setAndroidContext(this);
+
+        //Hacemos una referencia para recorrer todas las notas y añadir cada una a un marcador
+        final Firebase notes = new Firebase("https://letsnote.firebaseio.com/").child("notas");
 
     }
 }
