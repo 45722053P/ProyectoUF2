@@ -7,14 +7,18 @@
     android:layout_height="match_parent"
     tools:context="com.proyecto.projectmap.MapsActivity">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/sendNote"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:fabSize="normal"
+                                app:borderWidth="0dp"
+                                android:src="@drawable/send"/>
+                </RelativeLayout>
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@id/fabtoolbar_fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fabSize="normal"
-                    app:borderWidth="0dp"
-                    android:src="@drawable/send"/>
 
 </fragment>
 

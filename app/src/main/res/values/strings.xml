@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ProjectMap</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_add">Add</string>
+    <string name="title_activity_anadir_nota">AnadirNota</string>
+    <string name="action_settings">Settings</string>
 </resources>
