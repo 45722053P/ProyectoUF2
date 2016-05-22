@@ -39,6 +39,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.proyecto.projectmap.MapsActivity" />
         </activity>
+        <activity
+            android:name=".DetallesNota"
+            android:label="@string/title_activity_detalles_nota"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

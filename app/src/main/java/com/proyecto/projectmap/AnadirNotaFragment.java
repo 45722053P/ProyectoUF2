@@ -2,6 +2,7 @@ package com.proyecto.projectmap;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,9 @@ import android.widget.ImageButton;
 
 import com.firebase.client.Firebase;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -24,11 +28,28 @@ public class AnadirNotaFragment extends Fragment {
     boolean fototik = false;
     boolean videotik = false;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    double latitude = 0;
-    double longitude = 0;
-
+    double latitude=0;
+    double longitude=0;
+    Location loc = null;
 
     public AnadirNotaFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
+
+    }
+
+    //Recogemos el evento con la localizacion que nos da el LocationChangedEvent al que estamos suscritos
+    @Subscribe
+    public void onLocationChangedEvent(LocationChangedEvent event) {
+
+        latitude = event.getLocation().getLatitude();
+        longitude = event.getLocation().getLongitude();
+
     }
 
     @Override
@@ -145,5 +166,4 @@ public class AnadirNotaFragment extends Fragment {
 
         return path;
     }
-
 }

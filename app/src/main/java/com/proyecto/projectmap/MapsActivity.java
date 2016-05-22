@@ -3,6 +3,7 @@ package com.proyecto.projectmap;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -16,12 +17,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private LocationManager locationManager;
     private View fab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +39,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fab = findViewById(R.id.sendNote);
 
         fab.setOnClickListener(new View.OnClickListener() {
-            Intent i = new Intent(getBaseContext(),AnadirNota.class);
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(),AnadirNota.class);
                 startActivity(i);
             }
         });
     }
+
 
     /**
      * Manipulates the map once available.
@@ -60,7 +65,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mMap.setMyLocationEnabled(true);
-        mMap.setPadding(0, 155, 0, 0);
 
         //Le decimos a Firebase que este sera el contexto
         Firebase.setAndroidContext(this);
@@ -76,7 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     Nota nota = postSnapshot.getValue(Nota.class);
                     LatLng marker = new LatLng(nota.getLatitud(), nota.getLongitud());
-                    mMap.addMarker(new MarkerOptions().position(marker).title(postSnapshot.getKey()).snippet(nota.getTitulo()));
+                    mMap.addMarker(new MarkerOptions().position(marker));
 
                 }
             }
@@ -85,5 +89,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                Intent i = new Intent(getBaseContext(),DetallesNota.class);
+                startActivity(i);
+
+                return false;
+            }
+        });
     }
+
 }

@@ -77,7 +77,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="true"
-                android:hint="Añadir Titulo"
                 android:inputType="textCapSentences"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentLeft="true" />
@@ -98,7 +97,6 @@
                 android:layout_below="@+id/tituloanadir"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:hint="Añadir Descripción"
                 android:inputType="textCapSentences"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true" />
