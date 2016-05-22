@@ -43,9 +43,9 @@ public class AnadirNotaFragment extends Fragment {
 
     }
 
-    //Recogemos el evento con la localizacion que nos da el LocationChangedEvent al que estamos suscritos
+    //Recogemos el evento con la localizacion que nos da el CambiaLocation al que estamos suscritos
     @Subscribe
-    public void onLocationChangedEvent(LocationChangedEvent event) {
+    public void onLocationChangedEvent(CambiaLocation event) {
 
         latitude = event.getLocation().getLatitude();
         longitude = event.getLocation().getLongitude();
