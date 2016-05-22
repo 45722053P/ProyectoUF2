@@ -19,12 +19,12 @@ import java.io.File;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetallesNotaFragment extends Fragment {
+public class DetallesNotaFragment extends Fragment{
 
     TextView tituloNota,descripcionNota;
     ImageView mediaNota;
 
-    public DetallesNotaFragment() {
+    public DetallesNotaFragment(){
     }
 
     @Override
@@ -37,26 +37,26 @@ public class DetallesNotaFragment extends Fragment {
         mediaNota = (ImageView)view.findViewById(R.id.MediaNota);
 
 
-        //Hacemos una referencia para recorrer todas las notas y añadir cada una a un marcador
         final Firebase notas = new Firebase("https://proyectouf2.firebaseio.com/").child("notas");
 
-        notas.addValueEventListener(new ValueEventListener() {
+        notas.addValueEventListener(new ValueEventListener(){
+
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                //Recorremos todas las notas que haya en ese momento
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+            public void onDataChange(DataSnapshot snapshot){
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()){
 
                     Nota nota = postSnapshot.getValue(Nota.class);
                     tituloNota.setText("Titulo: " + nota.getTitulo());
                     descripcionNota.setText("Descripción: " + nota.getNota());
-                    File imagePath = new File(nota.getImagePath());
-                    Picasso.with(getContext()).load(imagePath).fit().into(mediaNota);
+                    File pathMedia = new File(nota.getImagePath());
+                    Picasso.with(getContext()).load(pathMedia).fit().into(mediaNota);
 
                 }
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(FirebaseError firebaseError){
             }
         });
 
