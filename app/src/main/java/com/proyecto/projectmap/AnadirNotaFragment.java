@@ -1,10 +1,16 @@
 package com.proyecto.projectmap;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,25 +18,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
+import java.io.File;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AnadirNotaFragment extends Fragment {
-
+public class AnadirNotaFragment extends Fragment implements LocationListener {
+    String nom;
     EditText titulo, descripcion;
     ImageButton btncamara, btnvideo;
     boolean fototik = false;
     boolean videotik = false;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    double latitude=0;
-    double longitude=0;
-    Location loc = null;
+    private double longitud;
+    private double latitud;
 
     public AnadirNotaFragment() {
     }
@@ -39,16 +44,11 @@ public class AnadirNotaFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        EventBus.getDefault().register(this);
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
-    }
+        locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, 5000, 10, this);
 
-    //Recogemos el evento con la localizacion que nos da el CambiaLocation al que estamos suscritos
-    @Subscribe
-    public void onLocationChangedEvent(CambiaLocation event) {
-
-        latitude = event.getLocation().getLatitude();
-        longitude = event.getLocation().getLongitude();
 
     }
 
@@ -99,10 +99,10 @@ public class AnadirNotaFragment extends Fragment {
                 Nota nota = new Nota();
                 nota.setTitulo(titulo.getText().toString());
                 nota.setNota(descripcion.getText().toString());
-                nota.setLatitud(latitude);
-                nota.setLongitud(longitude);
+                nota.setLatitud(latitud);
+                nota.setLongitud(longitud);
                 if (fototik) {
-                    nota.setImagePath(imageFile());
+                    nota.setImagePath(nom);
                     fototik = false;
                 }
                 if (videotik) {
@@ -132,15 +132,26 @@ public class AnadirNotaFragment extends Fragment {
     }
 
     public void openCamera(){
-
-        fototik = true;
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null){
-
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-
-        }
+        fototik =true;
+        Intent cameraIntent = new Intent(
+                android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        //Creamos una carpeta en la memeria del terminal
+        File imagesFolder = new File(
+                Environment.getExternalStorageDirectory(), "Map");
+        imagesFolder.mkdirs();
+        //añadimos el nombre de la imagen
+        nom = NomFoto()+".jpg";
+        File image = new File(imagesFolder, nom);
+        Uri uriSavedImage = Uri.fromFile(image);
+        //Le decimos al Intent que queremos grabar la imagen
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
+        //Lanzamos la aplicacion de la camara con retorno (forResult)
+        startActivityForResult(cameraIntent, 1);
+    }
+    private String NomFoto() {
+        long rand = (long) Math.floor(Math.random() * 5871);
+        String photoCode = "pic_" + rand;
+        return photoCode;
     }
 
     public String videoFile() {
@@ -165,5 +176,30 @@ public class AnadirNotaFragment extends Fragment {
         String path =  cursor.getString(column_index_data);
 
         return path;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.longitud = location.getLongitude();
+        this.latitud = location.getLatitude();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        //no se utiliza
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Toast.makeText(getContext(), "El GPS esta encendido",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
+        Toast.makeText(getContext(), "El Gps esta apagado",
+                Toast.LENGTH_SHORT).show();
     }
 }

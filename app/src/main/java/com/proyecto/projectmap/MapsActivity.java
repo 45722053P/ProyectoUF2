@@ -95,6 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onMarkerClick(Marker marker) {
 
                 Intent i = new Intent(getBaseContext(),DetallesNota.class);
+                i.putExtra("notaref", notas.getKey());
                 startActivity(i);
 
                 return false;
